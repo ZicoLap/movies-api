@@ -2,8 +2,13 @@ import express from "express";
 import morgan from "morgan";
 import { initDB } from "./utils/db.js";
 import authRouter from "./routes/auth.routes.js";
+import moviesRouter from "./routes/movies.routes.js";
+import { createDefaultAdmin } from "./utils/admin.js";
 
-initDB();
+initDB().then(() => {
+  createDefaultAdmin();
+}
+);
 
 const app = express();
 
@@ -17,6 +22,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRouter);
+app.use("/api/movies", moviesRouter);
 
 // General error handling middleware
 app.use((err, req, res, next) => {
