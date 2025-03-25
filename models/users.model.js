@@ -33,5 +33,9 @@ const User = sequelize.define(
   }
 );
 
+User.associate = (models) => {
+  User.hasMany(models.Review, { foreignKey: 'userId', as: 'reviews' });
+}
+
 
 export  { User };

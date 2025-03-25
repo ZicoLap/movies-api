@@ -4,6 +4,8 @@ import { initDB } from "./utils/db.js";
 import authRouter from "./routes/auth.routes.js";
 import moviesRouter from "./routes/movies.routes.js";
 import { createDefaultAdmin } from "./utils/admin.js";
+import reviewsRouter from "./routes/reviews.routes.js";
+
 
 initDB().then(() => {
   createDefaultAdmin();
@@ -23,6 +25,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRouter);
 app.use("/api/movies", moviesRouter);
+app.use("/api/reviews", reviewsRouter);
 
 // General error handling middleware
 app.use((err, req, res, next) => {
