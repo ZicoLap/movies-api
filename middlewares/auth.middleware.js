@@ -1,30 +1,34 @@
 import jwt from "jsonwebtoken";
 
-export function authenticateUser(req, res, next) {
+export async function authenticateUser(req, res, next) {
     const token = req.headers.authorization;
     console.log(token);
+    
     if (!token) {
-        return res.status(401).json({
-            status: "error",
-            error: "Unauthorized",
-        });
+        return res.status(401).json({ message: "Unauthorized" });
     }
+
+    console.log("Token has been found");
+
     try {
-        const user = jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-            console.log(err.message);
-            if (err) {
-                return res.status(401).json({
-                    status: "error",
-                    error: "Forbidden",
-                });
-            }
-            console.log(user);
-            req.user = user;
-            next();
-        }
-        );
+        console.log("Try to verify the token");
+        const decoded = await new Promise((resolve, reject) => {
+            jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(user);
+                }
+            });
+        });
+
+        console.log(decoded);
+        req.user = decoded;
+        console.log("User has been decoded");
+        next();
         
     } catch (error) {
-        return res.status(401).json({ error: "Unauthorized" });
+        console.error(error.message);
+        return res.status(401).json({ status: "error", error: "Forbidden" });
     }
-  }
+}
